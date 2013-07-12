@@ -3,7 +3,11 @@ class QuotesController < ApplicationController
   # GET /quotes
   # GET /quotes.json
   def index
-    @quotes = Quote.all
+    if params[:user_id]
+      @quotes = Quote.find_all_by_user_id(params[:user_id])
+    else
+      @quotes = Quote.all
+    end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -55,9 +59,9 @@ class QuotesController < ApplicationController
   def create
     @quote = Quote.new(params[:quote])
 
-    if @quote.user_id ==  logged_user.id
-
-    end
+    #if @quote.user_id ==  logged_user.id
+    #
+    #end
 
     respond_to do |format|
       if @quote.save

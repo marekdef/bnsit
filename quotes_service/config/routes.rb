@@ -1,9 +1,8 @@
 RESTEasy::Application.routes.draw do
 
-  match '/quotes' => 'quotes#all'
-  match '/quotes/new' => 'quotes#new'
+  resources :quotes
 
-  resources :users, :shallow => true do
+  resources :users do
     resources :quotes
   end
 
