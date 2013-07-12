@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
       :default_url => "/facebook_missing.jpg"
   validates_attachment_size :photo, :less_than => 2.megabytes, :styles=> { small: "150x150>"}
   validates_attachment_content_type :photo, :content_type => ['image/jpeg', 'image/png']
+  validates_uniqueness_of :user_name
+  validates_presence_of :last_name, :first_name, :user_name
   has_many :quotes, :dependent => :destroy
 
   def as_json(options = {})
