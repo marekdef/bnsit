@@ -1,5 +1,5 @@
 class QuotesController < ApplicationController
-  before_filter :authenticate, :except => [:index, :all, :show, :new]
+  before_filter :authenticate, :except => [:index, :all, :show, :new, :edit]
   # GET /quotes
   # GET /quotes.json
   def index
@@ -59,9 +59,9 @@ class QuotesController < ApplicationController
   def create
     @quote = Quote.new(params[:quote])
 
-    #if @quote.user_id ==  logged_user.id
-    #
-    #end
+    if @quote.user_id !=  @logged_user.id
+      redirect_to :status => 401
+    end
 
     respond_to do |format|
       if @quote.save
@@ -78,6 +78,11 @@ class QuotesController < ApplicationController
   # PUT /quotes/1.json
   def update
     @quote = Quote.find(params[:id])
+
+    if @quote.user_id !=  @logged_user.id
+      redirect_to :status => 401
+      return
+    end
 
     respond_to do |format|
       if @quote.update_attributes(params[:quote])
@@ -105,8 +110,8 @@ class QuotesController < ApplicationController
 
   def authenticate
     authenticate_or_request_with_http_basic do |username, password|
-      logged_user = User.find_by_user_name(username)
-      if logged_user && logged_user.authenticate(password)
+      @logged_user = User.find_by_user_name(username)
+      if @logged_user && @logged_user.authenticate(password)
         return true
       end
     end
